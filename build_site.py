@@ -171,6 +171,35 @@ PUBLICATIONS = [
         "featured": True,
     },
     {
+        "title": "Multimodal sentiment analysis in social media: a statistical framework for uncovering visual-textual divergence",
+        "authors": ["Oleksii Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii"],
+        "year": 2025,
+        "conference_title": (
+            "Proceedings of the International Scientific Conference "
+            "“Integration of Science and Innovation for Sustainable Development”"
+        ),
+        "venue_display": (
+            "Proceedings of the International Scientific Conference "
+            "“Integration of Science and Innovation for Sustainable Development”"
+        ),
+        "first_page": "21",
+        "last_page": "23",
+        "lang": "en",
+        "abstract": (
+            "This conference paper proposes a statistical framework for multimodal sentiment "
+            "analysis in social media, with a focus on detecting divergence between visual and "
+            "textual signals in the same post. It positions visual-textual divergence as an "
+            "analytically useful phenomenon for understanding ambiguity, irony, and inconsistent "
+            "affective cues across social media content."
+        ),
+        "links": [
+            ("Proceedings DOI", "https://doi.org/10.64076/iedc250821"),
+            ("Proceedings PDF", "https://researcheurope.org/wp-content/uploads/2025/09/re-21.08.2025.pdf"),
+        ],
+        "featured": True,
+    },
+    {
         "title": "МУЛЬТИМОДАЛЬНИЙ АНАЛІЗ ДАНИХ ІЗ СОЦІАЛЬНИХ МЕРЕЖ: ІНТЕГРАЦІЯ АУДІО ТА ТЕКСТУ ЗА ДОПОМОГОЮ ШІ",
         "authors": ["Oleksii O. Tumanov"],
         "citation_authors": ["Tumanov, Oleksii O."],
