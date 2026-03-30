@@ -93,34 +93,36 @@ CYRILLIC_MAP = str.maketrans(
 
 PUBLICATIONS = [
     {
-        "title": "Large Language Models: A New Paradigm for Data Analysis",
+        "title": "Великі мовні моделі: нова парадигма для аналізу даних",
         "authors": ["Oleksii Tumanov"],
         "citation_authors": ["Tumanov, Oleksii"],
+        "alternate_titles": ["Large Language Models: A New Paradigm for Data Analysis"],
         "year": 2025,
         "journal_title": "Business Inform",
-        "venue_display": "Business Inform",
+        "venue_display": "Бізнес Інформ",
         "volume": "9",
         "issue": "572",
         "first_page": "106",
         "last_page": "113",
         "doi": "10.32983/2222-4459-2025-9-106-113",
         "issn": "2222-4459",
-        "lang": "en",
+        "lang": "uk",
         "citations": 0,
         "abstract": (
-            "The article examines how large language models are changing data analysis across "
-            "domains such as social media analytics, healthcare, and software development. It "
-            "compares LLM-based approaches with traditional statistical methods across data type, "
-            "interpretability, purpose, data requirements, and reproducibility, and argues that the "
-            "strongest future direction is hybrid methodology that combines LLM preprocessing with "
-            "classical statistical analysis for greater transparency, reliability, and accuracy."
+            "Поява великих мовних моделей (ВММ) докорінно змінила парадигму аналізу даних, "
+            "вплинувши на такі галузі, як аналітика соціальних медіа, охорона здоров’я та "
+            "розробка програмного забезпечення. У статті порівнюються ВММ і традиційні "
+            "статистичні підходи за типом даних, інтерпретованістю, призначенням, вимогами до "
+            "даних і відтворюваністю, а найбільш перспективним напрямом визначено гібридну "
+            "методологію, що поєднує попередню обробку тексту ВММ із класичним статистичним аналізом."
         ),
         "links": [
             ("DOI record", "https://doi.org/10.32983/2222-4459-2025-9-106-113"),
             ("Publisher PDF", "https://www.business-inform.net/export_pdf/business-inform-2025-9_0-pages-106_113.pdf"),
-            ("Publisher article page", "https://www.business-inform.net/article/?abstract=2025_9_0_106_113&lang=en&year=2025"),
+            ("Publisher article page", "https://www.business-inform.net/article/?abstract=2025_9_0_106_113&year=2025"),
             ("ResearchGate entry", "https://www.researchgate.net/publication/398006520_Large_Language_Models_A_New_Paradigm_for_Data_Analysis"),
         ],
+        "slug": "large-language-models-a-new-paradigm-for-data-analysis",
         "featured": True,
     },
     {
@@ -174,11 +176,11 @@ PUBLICATIONS = [
         "featured": True,
     },
     {
-        "title": "Multimodal sentiment analysis in social media: a statistical framework for uncovering visual-textual divergence",
+        "title": "Мультимодальний аналіз настроїв у соціальних мережах: статистична основа для виявлення візуально-текстової дивергенції",
         "authors": ["Oleksii Tumanov"],
         "citation_authors": ["Tumanov, Oleksii"],
         "alternate_titles": [
-            "Мультимодальний аналіз настроїв у соціальних мережах: статистична основа для виявлення візуально-текстової дивергенції",
+            "Multimodal sentiment analysis in social media: a statistical framework for uncovering visual-textual divergence",
         ],
         "year": 2025,
         "conference_title": (
@@ -191,17 +193,34 @@ PUBLICATIONS = [
         ),
         "first_page": "21",
         "last_page": "23",
-        "lang": "en",
+        "lang": "uk",
         "abstract": (
-            "This conference paper proposes a statistical framework for multimodal sentiment "
-            "analysis in social media, with a focus on detecting divergence between visual and "
-            "textual signals in the same post. It positions visual-textual divergence as an "
-            "analytically useful phenomenon for understanding ambiguity, irony, and inconsistent "
-            "affective cues across social media content."
+            "У цій доповіді запропоновано статистичну основу для мультимодального аналізу "
+            "настроїв у соціальних мережах із фокусом на виявленні розбіжності між візуальними "
+            "та текстовими сигналами в одному повідомленні. Така візуально-текстова дивергенція "
+            "розглядається як аналітично значуще явище для інтерпретації неоднозначності, іронії "
+            "та суперечливих емоційних сигналів у цифровому контенті."
         ),
         "links": [
             ("Proceedings DOI", "https://doi.org/10.64076/iedc250821"),
             ("Proceedings PDF", "https://researcheurope.org/wp-content/uploads/2025/09/re-21.08.2025.pdf"),
+        ],
+        "slug": "multimodal-sentiment-analysis-in-social-media-a-statistical-framework-for-uncovering-visual-textual-divergence",
+        "featured": True,
+    },
+    {
+        "title": "THE CHANGING ROLE OF THE RESEARCHER: FROM SPREADSHEETS TO LARGE LANGUAGE MODELS",
+        "authors": ["Oleksii Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii"],
+        "year": 2025,
+        "conference_title": "World scientific and technical trends '2025",
+        "venue_display": "World scientific and technical trends '2025",
+        "first_page": "69",
+        "last_page": "72",
+        "lang": "en",
+        "links": [
+            ("Conference proceedings evidence", "https://repo.odmu.edu.ua/xmlui/bitstream/handle/123456789/19113/Sushchuk.pdf?sequence=1"),
+            ("Publisher article page", "https://www.proconference.org/index.php/gec/article/view/gec42-00-007"),
         ],
         "featured": True,
     },
