@@ -217,10 +217,12 @@ PUBLICATIONS = [
         "venue_display": "World scientific and technical trends '2025",
         "first_page": "69",
         "last_page": "72",
+        "doi": "10.30890/2709-1783.2025-42-00-007",
         "lang": "en",
         "links": [
+            ("DOI record", "https://doi.org/10.30890/2709-1783.2025-42-00-007"),
+            ("Conference issue PDF", "https://www.proconference.org/index.php/gec/issue/download/gec42-00/gec42-00"),
             ("Conference proceedings evidence", "https://repo.odmu.edu.ua/xmlui/bitstream/handle/123456789/19113/Sushchuk.pdf?sequence=1"),
-            ("Publisher article page", "https://www.proconference.org/index.php/gec/article/view/gec42-00-007"),
         ],
         "featured": True,
     },
