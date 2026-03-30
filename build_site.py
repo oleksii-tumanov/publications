@@ -174,6 +174,9 @@ PUBLICATIONS = [
         "title": "Multimodal sentiment analysis in social media: a statistical framework for uncovering visual-textual divergence",
         "authors": ["Oleksii Tumanov"],
         "citation_authors": ["Tumanov, Oleksii"],
+        "alternate_titles": [
+            "Мультимодальний аналіз настроїв у соціальних мережах: статистична основа для виявлення візуально-текстової дивергенції",
+        ],
         "year": 2025,
         "conference_title": (
             "Proceedings of the International Scientific Conference "
@@ -622,6 +625,10 @@ def structured_data(publication: dict) -> str:
         "mainEntityOfPage": page_url(publication),
     }
 
+    alternate_titles = publication.get("alternate_titles", [])
+    if alternate_titles:
+        payload["alternateName"] = alternate_titles[0] if len(alternate_titles) == 1 else alternate_titles
+
     venue = publication.get("venue_display")
     if venue:
         payload["isPartOf"] = {"@type": container_type, "name": venue}
@@ -706,9 +713,24 @@ def render_notes(publication: dict) -> str:
 """
 
 
+def render_alternate_titles(publication: dict) -> str:
+    alternate_titles = publication.get("alternate_titles", [])
+    if not alternate_titles:
+        return ""
+
+    items = "\n".join(
+        f'    <p class="meta">Also cited as: {escape(title)}</p>' for title in alternate_titles
+    )
+    return items + "\n"
+
+
 def render_publication_page(publication: dict) -> str:
     title = escape(publication["title"])
-    description = escape(f"Publication record for {publication['title']} by {', '.join(publication['authors'])}.")
+    description_text = f"Publication record for {publication['title']} by {', '.join(publication['authors'])}."
+    alternate_titles = publication.get("alternate_titles", [])
+    if alternate_titles:
+        description_text += f" Also cited as {alternate_titles[0]}."
+    description = escape(description_text)
     citation_line = render_citation_line(publication)
     authors_display = escape(", ".join(publication["authors"]))
     doi = publication.get("doi")
@@ -801,6 +823,7 @@ def render_publication_page(publication: dict) -> str:
     <h1>{title}</h1>
     <p class="authors">{authors_display}</p>
     <p class="citation">{citation_line}</p>
+{render_alternate_titles(publication)}\
 {doi_line}{render_notes(publication)}
 {render_links(publication)}
   </main>
