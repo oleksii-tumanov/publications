@@ -5,11 +5,14 @@ import html
 import json
 import re
 import unicodedata
+import urllib.parse
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
 SITE_URL = "https://oleksii-tumanov.github.io/publications/"
+RESEARCHGATE_PROFILE_URL = "https://www.researchgate.net/profile/Oleksii-Tumanov-2"
+ORCID_PROFILE_URL = "https://orcid.org/0000-0003-0674-0037"
 
 CYRILLIC_MAP = str.maketrans(
     {
@@ -199,6 +202,34 @@ PUBLICATIONS = [
         "links": [
             ("Proceedings DOI", "https://doi.org/10.64076/iedc250821"),
             ("Proceedings PDF", "https://researcheurope.org/wp-content/uploads/2025/09/re-21.08.2025.pdf"),
+        ],
+        "featured": True,
+    },
+    {
+        "title": "THE UNSEEN DATA: A STATISTICAL AND ENGINEERING PERSPECTIVE ON BIASES IN LARGE LANGUAGE MODELS",
+        "authors": ["Oleksii Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii"],
+        "year": 2025,
+        "journal_title": "SWorldJournal",
+        "venue_display": "SWorldJournal",
+        "volume": "1",
+        "issue": "33-01",
+        "first_page": "179",
+        "last_page": "187",
+        "doi": "10.30888/2663-5712.2025-33-01-078",
+        "issn": "2663-5712",
+        "lang": "en",
+        "abstract": (
+            "This paper frames bias in large language models as a statistical and engineering "
+            "problem rooted in non-representative training corpora, demographic "
+            "underrepresentation, and distorted parameter estimation. It distinguishes data-driven "
+            "bias from model-based bias and argues that mitigation requires both better sampling "
+            "discipline and engineering controls throughout model development and evaluation."
+        ),
+        "links": [
+            ("DOI record", "https://doi.org/10.30888/2663-5712.2025-33-01-078"),
+            ("Publisher PDF", "https://www.sworldjournal.com/index.php/swj/article/download/swj33-01-078/6044/2631"),
+            ("Publisher article page", "https://www.sworldjournal.com/index.php/swj/article/view/swj33-01-078"),
         ],
         "featured": True,
     },
@@ -691,8 +722,31 @@ def build_summary(publication: dict, short: bool = False) -> str:
     return " ".join(notes)
 
 
+def discovery_links(publication: dict) -> list[tuple[str, str]]:
+    scholar_queries = [f'"{publication["title"]}"']
+    scholar_queries.extend(f'"{title}"' for title in publication.get("alternate_titles", []))
+    scholar_query = urllib.parse.quote(" OR ".join(scholar_queries))
+    return [
+        ("Google Scholar search", f"https://scholar.google.com/scholar?q={scholar_query}"),
+        ("ResearchGate profile", RESEARCHGATE_PROFILE_URL),
+        ("ORCID profile", ORCID_PROFILE_URL),
+    ]
+
+
+def combined_links(publication: dict) -> list[tuple[str, str]]:
+    combined: list[tuple[str, str]] = []
+    seen: set[tuple[str, str]] = set()
+    for label, url in [*publication.get("links", []), *discovery_links(publication)]:
+        key = (label, url)
+        if key in seen:
+            continue
+        combined.append((label, url))
+        seen.add(key)
+    return combined
+
+
 def render_links(publication: dict) -> str:
-    links = publication.get("links", [])
+    links = combined_links(publication)
     if not links:
         return ""
 
@@ -834,9 +888,7 @@ def render_publication_page(publication: dict) -> str:
 
 def render_index_item(publication: dict) -> str:
     links = [f'<a href="{escape(publication["slug"])}.html">Local page</a>']
-    for label, url in publication.get("links", []):
-        if "google scholar" in label.lower():
-            continue
+    for label, url in combined_links(publication):
         links.append(f'<a href="{escape(url)}">{escape(label)}</a>')
 
     citation_hint = ""
