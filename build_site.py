@@ -255,6 +255,9 @@ PUBLICATIONS = [
         "year": 2025,
         "conference_title": "Socio-economic development in the context of today’s challenges: proceedings of the III International scientific and practical conference",
         "venue_display": "Socio-economic development in the context of today’s challenges: proceedings of the III International scientific and practical conference",
+        "event_location": "Odesa, Ukraine",
+        "event_date": "August 16, 2025",
+        "proceedings_doi": "10.64076/eecsr250816",
         "first_page": "114",
         "last_page": "118",
         "lang": "uk",
@@ -820,6 +823,22 @@ def render_alternate_titles(publication: dict) -> str:
     return items + "\n"
 
 
+def render_extra_meta(publication: dict) -> str:
+    lines: list[str] = []
+
+    if publication.get("event_location"):
+        lines.append(f'    <p class="meta">Event location: {escape(publication["event_location"])}</p>')
+    if publication.get("event_date"):
+        lines.append(f'    <p class="meta">Event date: {escape(publication["event_date"])}</p>')
+    if publication.get("proceedings_doi"):
+        lines.append(f'    <p class="meta">Proceedings DOI: {escape(publication["proceedings_doi"])}</p>')
+
+    if not lines:
+        return ""
+
+    return "\n".join(lines) + "\n"
+
+
 def render_publication_page(publication: dict) -> str:
     title = escape(publication["title"])
     description_text = f"Publication record for {publication['title']} by {', '.join(publication['authors'])}."
@@ -920,6 +939,7 @@ def render_publication_page(publication: dict) -> str:
     <p class="authors">{authors_display}</p>
     <p class="citation">{citation_line}</p>
 {render_alternate_titles(publication)}\
+{render_extra_meta(publication)}\
 {doi_line}{render_notes(publication)}
 {render_links(publication)}
   </main>
