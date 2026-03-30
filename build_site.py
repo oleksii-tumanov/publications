@@ -96,8 +96,8 @@ PUBLICATIONS = [
         "year": 2025,
         "journal_title": "Business Inform",
         "venue_display": "Business Inform",
-        "issue": "9",
-        "volume": "572",
+        "volume": "9",
+        "issue": "572",
         "first_page": "106",
         "last_page": "113",
         "doi": "10.32983/2222-4459-2025-9-106-113",
@@ -127,6 +127,9 @@ PUBLICATIONS = [
         "year": 2025,
         "journal_title": "Modern engineering and innovative technologies",
         "venue_display": "Modern engineering and innovative technologies",
+        "doi": "10.30890/2567-5273.2025-42-03-055",
+        "issn": "2567-5273",
+        "issue": "42-03",
         "first_page": "110",
         "last_page": "120",
         "lang": "en",
@@ -139,7 +142,11 @@ PUBLICATIONS = [
             "traditional statistical tools, modern data platforms, and AI agents complement rather "
             "than replace one another."
         ),
-        "links": [],
+        "links": [
+            ("DOI record", "https://doi.org/10.30890/2567-5273.2025-42-03-055"),
+            ("Publisher PDF", "https://www.moderntechno.de/index.php/meit/article/download/meit42-03-055/9900"),
+            ("Publisher article page", "https://www.moderntechno.de/index.php/meit/article/view/meit42-03-055"),
+        ],
         "featured": True,
     },
     {
@@ -150,12 +157,16 @@ PUBLICATIONS = [
         "journal_title": "Sworld-Us Conference proceedings",
         "venue_display": "Sworld-Us Conference proceedings",
         "doi": "10.30888/2709-2267.2025-33-00-018",
+        "issn": "2709-2267",
+        "issue": "usc33-00",
         "first_page": "25",
         "last_page": "31",
         "lang": "en",
         "citations": 0,
         "links": [
             ("DOI record", "https://doi.org/10.30888/2709-2267.2025-33-00-018"),
+            ("Publisher PDF", "https://www.proconference.org/index.php/usc/article/download/usc33-00-018/3230"),
+            ("Publisher article page", "https://www.proconference.org/index.php/usc/article/view/usc33-00-018"),
         ],
         "featured": True,
     },
@@ -189,6 +200,7 @@ PUBLICATIONS = [
         "journal_title": "Business Inform",
         "venue_display": "Business Inform",
         "volume": "2",
+        "issue": "505",
         "doi": "10.32983/2222-4459-2020-2-266-272",
         "issn": "2222-4459",
         "first_page": "266",
@@ -197,6 +209,8 @@ PUBLICATIONS = [
         "citations": 12,
         "links": [
             ("DOI record", "https://doi.org/10.32983/2222-4459-2020-2-266-272"),
+            ("Publisher PDF", "https://www.business-inform.net/export_pdf/business-inform-2020-2_0-pages-266_272.pdf"),
+            ("Publisher article page", "https://www.business-inform.net/article/?year=2020&abstract=2020_2_0_266_272&lang=en"),
         ],
         "featured": True,
     },
@@ -237,11 +251,14 @@ PUBLICATIONS = [
         "venue_display": "Investytsiyi: praktyka ta dosvid",
         "doi": "10.32702/2306-6814.2020.5-6.66",
         "issn": "2306-6814",
+        "issue": "5-6",
         "first_page": "66",
-        "last_page": "66",
+        "last_page": "71",
         "lang": "uk",
         "links": [
             ("DOI record", "https://doi.org/10.32702/2306-6814.2020.5-6.66"),
+            ("Publisher PDF", "http://www.investplan.com.ua/pdf/5-6_2020/12.pdf"),
+            ("Publisher article page", "http://www.investplan.com.ua/?op=1&z=7071&i=9"),
         ],
     },
     {
@@ -263,9 +280,15 @@ PUBLICATIONS = [
         "journal_title": "Scientific Bulletin of the National Academy of Statistics, Accounting and Audit",
         "venue_display": "Scientific Bulletin of the National Academy of Statistics, Accounting and Audit",
         "doi": "10.31767/nasoa.1-2.2020.03",
+        "issn": "2521-1323",
+        "issue": "1-2",
+        "first_page": "30",
+        "last_page": "39",
         "lang": "en",
         "links": [
             ("DOI record", "https://doi.org/10.31767/nasoa.1-2.2020.03"),
+            ("Publisher PDF", "https://nasoa-journal.com.ua/index.php/journal/article/download/203/198"),
+            ("Publisher article page", "https://nasoa-journal.com.ua/index.php/journal/article/view/203"),
         ],
     },
     {
@@ -321,6 +344,8 @@ PUBLICATIONS = [
         "year": 2020,
         "journal_title": "Business Inform",
         "venue_display": "Business Inform",
+        "volume": "3",
+        "issue": "506",
         "doi": "10.32983/2222-4459-2020-3-244-252",
         "issn": "2222-4459",
         "first_page": "244",
@@ -328,6 +353,8 @@ PUBLICATIONS = [
         "lang": "uk",
         "links": [
             ("DOI record", "https://doi.org/10.32983/2222-4459-2020-3-244-252"),
+            ("Publisher PDF", "https://www.business-inform.net/export_pdf/business-inform-2020-3_0-pages-244_252.pdf"),
+            ("Publisher article page", "https://www.business-inform.net/article/?year=2020&abstract=2020_3_0_244_252&lang=en"),
         ],
     },
     {
@@ -339,11 +366,14 @@ PUBLICATIONS = [
         "venue_display": "Agrosvit",
         "doi": "10.32702/2306-6792.2020.5.75",
         "issn": "2306-6792",
+        "issue": "5",
         "first_page": "75",
-        "last_page": "75",
+        "last_page": "80",
         "lang": "en",
         "links": [
             ("DOI record", "https://doi.org/10.32702/2306-6792.2020.5.75"),
+            ("Publisher PDF", "http://www.agrosvit.info/pdf/5_2020/13.pdf"),
+            ("Publisher article page", "http://www.agrosvit.info/?op=1&z=3121&i=11"),
         ],
     },
     {
@@ -354,10 +384,16 @@ PUBLICATIONS = [
         "journal_title": "Scientific Bulletin of the National Academy of Statistics, Accounting and Audit",
         "venue_display": "Scientific Bulletin of the National Academy of Statistics, Accounting and Audit",
         "doi": "10.31767/nasoa.4.2019.03",
+        "issn": "2521-1323",
+        "issue": "4",
+        "first_page": "24",
+        "last_page": "29",
         "lang": "en",
         "citations": 4,
         "links": [
             ("DOI record", "https://doi.org/10.31767/nasoa.4.2019.03"),
+            ("Publisher PDF", "https://nasoa-journal.com.ua/index.php/journal/article/download/192/194"),
+            ("Publisher article page", "https://nasoa-journal.com.ua/index.php/journal/article/view/192"),
         ],
     },
     {
@@ -368,6 +404,7 @@ PUBLICATIONS = [
         "journal_title": "Business Inform",
         "venue_display": "Business Inform",
         "volume": "12",
+        "issue": "503",
         "doi": "10.32983/2222-4459-2019-12-8-14",
         "issn": "2222-4459",
         "first_page": "8",
@@ -376,6 +413,8 @@ PUBLICATIONS = [
         "citations": 4,
         "links": [
             ("DOI record", "https://doi.org/10.32983/2222-4459-2019-12-8-14"),
+            ("Publisher PDF", "https://www.business-inform.net/export_pdf/business-inform-2019-12_0-pages-8_14.pdf"),
+            ("Publisher article page", "https://www.business-inform.net/article/?year=2019&abstract=2019_12_0_8_14&lang=en"),
         ],
     },
     {
@@ -385,12 +424,18 @@ PUBLICATIONS = [
         "year": 2019,
         "journal_title": "The Problems of Economy",
         "venue_display": "The Problems of Economy",
+        "volume": "4",
+        "issue": "42",
         "doi": "10.32983/2222-0712-2019-4-239-249",
         "issn": "2222-0712",
+        "first_page": "239",
+        "last_page": "249",
         "lang": "uk",
         "citations": 2,
         "links": [
             ("DOI record", "https://doi.org/10.32983/2222-0712-2019-4-239-249"),
+            ("Publisher PDF", "https://www.problecon.com/export_pdf/problems-of-economy-2019-4_0-pages-239_249.pdf"),
+            ("Publisher article page", "https://www.problecon.com/article/?year=2019&abstract=2019_4_0_239_249"),
         ],
     },
     {
@@ -466,7 +511,8 @@ def page_range(publication: dict) -> str | None:
 def render_citation_line(publication: dict) -> str:
     parts = [escape(", ".join(publication["authors"]))]
     title = escape(publication["title"])
-    parts.append(f"({publication['year']}). {title}.")
+    title_suffix = "" if publication["title"].rstrip().endswith((".", "?", "!")) else "."
+    parts.append(f"({publication['year']}). {title}{title_suffix}")
 
     venue = publication.get("venue_display")
     volume = publication.get("volume")
@@ -475,7 +521,7 @@ def render_citation_line(publication: dict) -> str:
 
     trailing_parts = []
     if volume and issue:
-        trailing_parts.append(f"{escape(issue)} ({escape(volume)})")
+        trailing_parts.append(f"{escape(volume)} ({escape(issue)})")
     elif volume:
         trailing_parts.append(escape(volume))
     elif issue:
