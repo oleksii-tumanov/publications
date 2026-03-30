@@ -626,6 +626,7 @@ def build_summary(publication: dict, short: bool = False) -> str:
     authors = ", ".join(publication["authors"])
     venue = publication.get("venue_display")
     pages = page_range(publication)
+    has_external_links = bool(publication.get("links"))
     citation_sentence = f"This page records the publication “{publication['title']}” by {authors}."
     if venue:
         citation_sentence += f" The public bibliographic record lists it in {venue} in {publication['year']}."
@@ -639,8 +640,13 @@ def build_summary(publication: dict, short: bool = False) -> str:
 
     notes = [
         citation_sentence,
-        "This catalog page is maintained as a stable public reference for indexing, citation verification, and later addition of publisher, DOI, or PDF links when available.",
+        "This catalog page is maintained as a stable public reference for indexing and citation verification.",
     ]
+
+    if has_external_links:
+        notes.append("Verified publisher, DOI, or PDF links are included below when available.")
+    else:
+        notes.append("No public publisher PDF or article page has been verified for this record yet.")
 
     citations = publication.get("citations")
     if citations:
