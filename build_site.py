@@ -263,6 +263,7 @@ PUBLICATIONS = [
         "lang": "uk",
         "links": [
             ("Proceedings DOI", "https://doi.org/10.64076/eecsr250816"),
+            ("Paper start page", "https://researcheurope.org/wp-content/uploads/2025/08/re-16.08.2025.pdf#page=114"),
             ("Proceedings PDF", "https://researcheurope.org/wp-content/uploads/2025/08/re-16.08.2025.pdf"),
         ],
     },
