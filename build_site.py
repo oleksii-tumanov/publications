@@ -1,0 +1,1019 @@
+from __future__ import annotations
+
+import datetime as dt
+import html
+import json
+import re
+import unicodedata
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parent
+SITE_URL = "https://oleksii-tumanov.github.io/publications/"
+GOOGLE_SCHOLAR_URL = "https://scholar.google.com/citations?user=VfIUt5IAAAAJ&hl=en"
+RESEARCHGATE_PROFILE_URL = "https://www.researchgate.net/profile/Oleksii-Tumanov-2?ev=hdr_xprf"
+
+CYRILLIC_MAP = str.maketrans(
+    {
+        "А": "A",
+        "Б": "B",
+        "В": "V",
+        "Г": "H",
+        "Ґ": "G",
+        "Д": "D",
+        "Е": "E",
+        "Є": "Ie",
+        "Ж": "Zh",
+        "З": "Z",
+        "И": "Y",
+        "І": "I",
+        "Ї": "Yi",
+        "Й": "Y",
+        "К": "K",
+        "Л": "L",
+        "М": "M",
+        "Н": "N",
+        "О": "O",
+        "П": "P",
+        "Р": "R",
+        "С": "S",
+        "Т": "T",
+        "У": "U",
+        "Ф": "F",
+        "Х": "Kh",
+        "Ц": "Ts",
+        "Ч": "Ch",
+        "Ш": "Sh",
+        "Щ": "Shch",
+        "Ь": "",
+        "Ю": "Yu",
+        "Я": "Ya",
+        "Ъ": "",
+        "Ы": "Y",
+        "Э": "E",
+        "а": "a",
+        "б": "b",
+        "в": "v",
+        "г": "h",
+        "ґ": "g",
+        "д": "d",
+        "е": "e",
+        "є": "ie",
+        "ж": "zh",
+        "з": "z",
+        "и": "y",
+        "і": "i",
+        "ї": "yi",
+        "й": "y",
+        "к": "k",
+        "л": "l",
+        "м": "m",
+        "н": "n",
+        "о": "o",
+        "п": "p",
+        "р": "r",
+        "с": "s",
+        "т": "t",
+        "у": "u",
+        "ф": "f",
+        "х": "kh",
+        "ц": "ts",
+        "ч": "ch",
+        "ш": "sh",
+        "щ": "shch",
+        "ь": "",
+        "ю": "yu",
+        "я": "ya",
+        "ъ": "",
+        "ы": "y",
+        "э": "e",
+    }
+)
+
+PROFILE_LINKS = [
+    ("Google Scholar profile", GOOGLE_SCHOLAR_URL),
+    ("ResearchGate profile", RESEARCHGATE_PROFILE_URL),
+]
+
+PUBLICATIONS = [
+    {
+        "title": "Large Language Models: A New Paradigm for Data Analysis",
+        "authors": ["Oleksii O. Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii O."],
+        "year": 2025,
+        "journal_title": "Business Inform",
+        "venue_display": "Business Inform",
+        "issue": "9",
+        "volume": "572",
+        "first_page": "106",
+        "last_page": "113",
+        "doi": "10.32983/2222-4459-2025-9-106-113",
+        "issn": "2222-4459",
+        "lang": "en",
+        "citations": 0,
+        "abstract": (
+            "The article examines how large language models are changing data analysis across "
+            "domains such as social media analytics, healthcare, and software development. It "
+            "compares LLM-based approaches with traditional statistical methods across data type, "
+            "interpretability, purpose, data requirements, and reproducibility, and argues that the "
+            "strongest future direction is hybrid methodology that combines LLM preprocessing with "
+            "classical statistical analysis for greater transparency, reliability, and accuracy."
+        ),
+        "links": [
+            ("DOI record", "https://doi.org/10.32983/2222-4459-2025-9-106-113"),
+            ("Publisher PDF", "https://www.business-inform.net/export_pdf/business-inform-2025-9_0-pages-106_113.pdf"),
+            ("Publisher article page", "https://www.business-inform.net/article/?abstract=2025_9_0_106_113&lang=en&year=2025"),
+            ("ResearchGate entry", "https://www.researchgate.net/publication/398006520_Large_Language_Models_A_New_Paradigm_for_Data_Analysis"),
+        ],
+        "featured": True,
+    },
+    {
+        "title": "THE EVOLUTION OF DATA ANALYSIS TOOLS: FROM SPREADSHEETS TO ARTIFICIAL INTELLIGENCE AGENTS",
+        "authors": ["Oleksii Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii"],
+        "year": 2025,
+        "journal_title": "Modern engineering and innovative technologies",
+        "venue_display": "Modern engineering and innovative technologies",
+        "first_page": "110",
+        "last_page": "120",
+        "lang": "en",
+        "abstract": (
+            "This review article traces the evolution of data analysis tools from spreadsheets and "
+            "corporate BI platforms to cloud-native data stacks and agentic systems built on large "
+            "language models. It examines the methodological shift from syntax-centered work to "
+            "semantic layers, reproducibility, orchestration, and evaluation-by-design, and argues "
+            "that the most promising direction is an integrated analytical environment where "
+            "traditional statistical tools, modern data platforms, and AI agents complement rather "
+            "than replace one another."
+        ),
+        "links": [],
+        "featured": True,
+    },
+    {
+        "title": "MULTIMODAL AUDIO ANALYSIS IN SOCIAL MEDIA: AN AI-DRIVEN APPROACH TO EMOTIONAL INSIGHT",
+        "authors": ["Oleksii Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii"],
+        "year": 2025,
+        "conference_title": "Sworld-Us Conference proceedings",
+        "venue_display": "Sworld-Us Conference proceedings",
+        "first_page": "25",
+        "last_page": "31",
+        "lang": "en",
+        "citations": 0,
+        "links": [],
+        "featured": True,
+    },
+    {
+        "title": "МУЛЬТИМОДАЛЬНИЙ АНАЛІЗ ДАНИХ ІЗ СОЦІАЛЬНИХ МЕРЕЖ: ІНТЕГРАЦІЯ АУДІО ТА ТЕКСТУ ЗА ДОПОМОГОЮ ШІ",
+        "authors": ["Oleksii O. Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii O."],
+        "year": 2025,
+        "conference_title": "The 9 th International scientific and practical conference “Global trends in …",
+        "venue_display": "The 9 th International scientific and practical conference “Global trends in …",
+        "lang": "uk",
+        "links": [],
+    },
+    {
+        "title": "РОЗРОБКА СИСТЕМИ СТАТИСТИЧНИХ ПОКАЗНИКІВ ДЛЯ МОНІТОРИНГУ ЕМОЦІЙНОГО СТАНУ У СОЦІАЛЬНИХ МЕДІА",
+        "authors": ["Oleksii O. Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii O."],
+        "year": 2025,
+        "journal_title": "Соціально-економічний розвиток у контексті викликів сьогодення",
+        "venue_display": "Соціально-економічний розвиток у контексті викликів сьогодення",
+        "first_page": "114",
+        "last_page": "114",
+        "lang": "uk",
+        "links": [],
+    },
+    {
+        "title": "Statistical methods for analyzing social media data.",
+        "authors": ["Oleksii O. Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii O."],
+        "year": 2020,
+        "journal_title": "Inform",
+        "venue_display": "Inform",
+        "volume": "2",
+        "first_page": "266",
+        "last_page": "272",
+        "lang": "en",
+        "citations": 12,
+        "links": [],
+        "featured": True,
+    },
+    {
+        "title": "Статистичне прогнозування кількості інтернет-користувачів в Україні",
+        "authors": ["Oleksii O. Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii O."],
+        "year": 2020,
+        "conference_title": "Modern science: problems and innovations",
+        "venue_display": "Modern science: problems and innovations",
+        "volume": "1",
+        "first_page": "697",
+        "last_page": "703",
+        "lang": "uk",
+        "citations": 2,
+        "links": [],
+    },
+    {
+        "title": "Statistical evaluation of social media development",
+        "authors": ["Oleksii O. Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii O."],
+        "year": 2020,
+        "venue_display": "URL: http://nasoa.edu.ua/wp-content/uploads/zah/tumanov_avt.pdf",
+        "lang": "en",
+        "citations": 2,
+        "links": [
+            ("Referenced PDF", "http://nasoa.edu.ua/wp-content/uploads/zah/tumanov_avt.pdf"),
+        ],
+    },
+    {
+        "title": "ФОРМУВАННЯ СИСТЕМИ СТАТИСТИЧНИХ ПОКАЗНИКІВ ДЛЯ ДОСЛІДЖЕННЯ СОЦІАЛЬНИХ МЕДІА В УКРАЇНІ",
+        "authors": ["Oleksii O. Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii O."],
+        "year": 2020,
+        "journal_title": "Інвестиції: практика та досвід",
+        "venue_display": "Інвестиції: практика та досвід №5 192",
+        "first_page": "66",
+        "last_page": "66",
+        "lang": "uk",
+        "links": [],
+    },
+    {
+        "title": "ОГЛЯД СТАТИСТИЧНИХ ПОКАЗНИКІВ В ДОСЛІДЖЕННЯХ СОЦІАЛЬНИХ МЕДІА",
+        "authors": ["Oleksii O. Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii O."],
+        "year": 2020,
+        "venue_display": "BBK 35 475",
+        "first_page": "435",
+        "last_page": "435",
+        "lang": "uk",
+        "links": [],
+    },
+    {
+        "title": "Developing Social Media in Ukraine: Statistical Forecasting",
+        "authors": ["O. Tumanov"],
+        "citation_authors": ["Tumanov, O."],
+        "year": 2020,
+        "journal_title": "Scientific Bulletin of the National Academy of Statistics, Accounting and …",
+        "venue_display": "Scientific Bulletin of the National Academy of Statistics, Accounting and …",
+        "lang": "en",
+        "links": [],
+    },
+    {
+        "title": "СОЦІАЛЬНІ МЕДІА ЯК ІНСТРУМЕНТ ДОСЛІДЖЕННЯ",
+        "authors": ["Oleksii O. Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii O."],
+        "year": 2020,
+        "venue_display": "BBK 87",
+        "first_page": "1142",
+        "last_page": "1142",
+        "lang": "uk",
+        "links": [],
+    },
+    {
+        "title": "До питання становлення поняття «соціальні медіа»",
+        "authors": ["Oleksii O. Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii O."],
+        "year": 2020,
+        "conference_title": "Sience, sosiety, education: topical issues and development: II Міжнар. наук …",
+        "venue_display": "Sience, sosiety, education: topical issues and development: II Міжнар. наук …",
+        "lang": "uk",
+        "links": [],
+    },
+    {
+        "title": "ПРОБЛЕМИ СТАТИСТИЧНОГО ОЦІНЮВАННЯ СОЦІАЛЬНИХ МЕДІА",
+        "authors": ["Oleksii O. Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii O."],
+        "year": 2020,
+        "venue_display": "BBK 91 1057",
+        "first_page": "954",
+        "last_page": "954",
+        "lang": "uk",
+        "links": [],
+    },
+    {
+        "title": "АНАЛІЗ ВПЛИВУ СОЦІАЛЬНИХ МЕДІА НА РОЗВИТОК БІЗНЕС-ОРГАНІЗАЦІЙ",
+        "authors": ["Oleksii O. Tumanov", "O. V. Tumanova"],
+        "citation_authors": ["Tumanov, Oleksii O.", "Tumanova, O. V."],
+        "year": 2020,
+        "venue_display": "BBK 83",
+        "first_page": "997",
+        "last_page": "997",
+        "lang": "uk",
+        "links": [],
+    },
+    {
+        "title": "Кластерний аналіз використання та розповсюдження Інтернет-технологій у регіонах України",
+        "authors": ["Oleksii O. Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii O."],
+        "year": 2020,
+        "journal_title": "Бизнес Информ",
+        "venue_display": "Бизнес Информ",
+        "first_page": "244",
+        "last_page": "252",
+        "lang": "uk",
+        "links": [],
+    },
+    {
+        "title": "STATISTICAL ANALYSIS OF THE USE OF SOCIAL MEDIA IN EDUCATION AND TRAINING",
+        "authors": ["O. Tumanov"],
+        "citation_authors": ["Tumanov, O."],
+        "year": 2020,
+        "journal_title": "АГРОСВІТ",
+        "venue_display": "АГРОСВІТ",
+        "first_page": "75",
+        "last_page": "75",
+        "lang": "en",
+        "links": [],
+    },
+    {
+        "title": "Aspects of Using Social Media in Research",
+        "authors": ["O. Tumanov"],
+        "citation_authors": ["Tumanov, O."],
+        "year": 2019,
+        "journal_title": "Scientific Bulletin of the National Academy of Statistics, Accounting and …",
+        "venue_display": "Scientific Bulletin of the National Academy of Statistics, Accounting and …",
+        "lang": "en",
+        "citations": 4,
+        "links": [],
+    },
+    {
+        "title": "Social media as the object of statistical research",
+        "authors": ["Oleksii O. Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii O."],
+        "year": 2019,
+        "journal_title": "Business Inform",
+        "venue_display": "Business Inform",
+        "volume": "12",
+        "first_page": "8",
+        "last_page": "14",
+        "lang": "en",
+        "citations": 4,
+        "links": [],
+    },
+    {
+        "title": "Інформаційне забезпечення статистичного вивчення соціальних медіа",
+        "authors": ["T. H. Chala", "Oleksii O. Tumanov"],
+        "citation_authors": ["Chala, T. H.", "Tumanov, Oleksii O."],
+        "year": 2019,
+        "journal_title": "Problems of Economy",
+        "venue_display": "Problems of Economy",
+        "lang": "uk",
+        "citations": 2,
+        "links": [],
+    },
+    {
+        "title": "Розвиток статистичної системи управління метаданими в Україні",
+        "authors": ["Oleksii O. Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii O."],
+        "year": 2019,
+        "venue_display": "BBK 73 834",
+        "first_page": "832",
+        "last_page": "832",
+        "lang": "uk",
+        "links": [],
+    },
+    {
+        "title": "СТАТИСТИЧНИЙ АНАЛІЗ РІВНЯ РОЗВИТКУ ІНФОРМАЦІЙНОГО СУСПІЛЬСТВА В УКРАЇНІ",
+        "authors": ["Oleksii O. Tumanov"],
+        "citation_authors": ["Tumanov, Oleksii O."],
+        "year": 2019,
+        "venue_display": "BBK 79",
+        "first_page": "897",
+        "last_page": "897",
+        "lang": "uk",
+        "links": [],
+    },
+    {
+        "title": "Optimisation de la synchronisation de donnees entre les systemes informatiques avec l'utilisation des technologies nuageux",
+        "authors": ["O. Tumanov"],
+        "citation_authors": ["Tumanov, O."],
+        "year": 2014,
+        "lang": "fr",
+        "links": [],
+    },
+]
+
+
+def transliterate(text: str) -> str:
+    normalized = text.translate(CYRILLIC_MAP)
+    normalized = unicodedata.normalize("NFKD", normalized)
+    return normalized.encode("ascii", "ignore").decode("ascii")
+
+
+def slugify(text: str) -> str:
+    ascii_text = transliterate(text)
+    slug = re.sub(r"[^a-zA-Z0-9]+", "-", ascii_text.lower()).strip("-")
+    return re.sub(r"-{2,}", "-", slug)
+
+
+def ensure_slugs() -> None:
+    seen: dict[str, int] = {}
+    for publication in PUBLICATIONS:
+        base_slug = publication.get("slug") or slugify(publication["title"])
+        count = seen.get(base_slug, 0)
+        seen[base_slug] = count + 1
+        publication["slug"] = base_slug if count == 0 else f"{base_slug}-{count + 1}"
+
+
+def page_url(publication: dict) -> str:
+    return f"{SITE_URL}{publication['slug']}.html"
+
+
+def escape(text: str) -> str:
+    return html.escape(text, quote=True)
+
+
+def page_range(publication: dict) -> str | None:
+    first_page = publication.get("first_page")
+    last_page = publication.get("last_page")
+    if first_page and last_page:
+        return first_page if first_page == last_page else f"{first_page}-{last_page}"
+    return None
+
+
+def render_citation_line(publication: dict) -> str:
+    parts = [escape(", ".join(publication["authors"]))]
+    title = escape(publication["title"])
+    parts.append(f"({publication['year']}). {title}.")
+
+    venue = publication.get("venue_display")
+    volume = publication.get("volume")
+    issue = publication.get("issue")
+    pages = page_range(publication)
+
+    trailing_parts = []
+    if volume and issue:
+        trailing_parts.append(f"{escape(issue)} ({escape(volume)})")
+    elif volume:
+        trailing_parts.append(escape(volume))
+    elif issue:
+        trailing_parts.append(escape(issue))
+    if pages:
+        trailing_parts.append(escape(pages))
+
+    if venue:
+        venue_fragment = f"<em>{escape(venue)}</em>"
+        if trailing_parts:
+            venue_fragment += ", " + ", ".join(trailing_parts)
+        venue_fragment += "."
+        parts.append(venue_fragment)
+    elif trailing_parts:
+        parts.append(", ".join(trailing_parts) + ".")
+
+    return " ".join(parts)
+
+
+def meta_tags(publication: dict) -> str:
+    tags = [
+        ("citation_title", publication["title"]),
+        ("citation_publication_date", str(publication["year"])),
+        ("citation_abstract_html_url", page_url(publication)),
+        ("citation_language", publication.get("lang", "en")),
+    ]
+
+    for author in publication.get("citation_authors", publication["authors"]):
+        tags.append(("citation_author", author))
+
+    if publication.get("journal_title"):
+        tags.append(("citation_journal_title", publication["journal_title"]))
+    if publication.get("conference_title"):
+        tags.append(("citation_conference_title", publication["conference_title"]))
+    if publication.get("issn"):
+        tags.append(("citation_issn", publication["issn"]))
+    if publication.get("volume"):
+        tags.append(("citation_volume", publication["volume"]))
+    if publication.get("issue"):
+        tags.append(("citation_issue", publication["issue"]))
+    if publication.get("first_page"):
+        tags.append(("citation_firstpage", publication["first_page"]))
+    if publication.get("last_page"):
+        tags.append(("citation_lastpage", publication["last_page"]))
+    if publication.get("doi"):
+        tags.append(("citation_doi", publication["doi"]))
+
+    for label, url in publication.get("links", []):
+        if "pdf" in label.lower():
+            tags.append(("citation_pdf_url", url))
+            break
+
+    return "\n".join(
+        f'  <meta name="{escape(name)}" content="{escape(value)}">' for name, value in tags if value
+    )
+
+
+def structured_data(publication: dict) -> str:
+    container_type = "Periodical" if publication.get("journal_title") else "CreativeWorkSeries"
+    payload = {
+        "@context": "https://schema.org",
+        "@type": "ScholarlyArticle",
+        "headline": publication["title"],
+        "name": publication["title"],
+        "url": page_url(publication),
+        "datePublished": str(publication["year"]),
+        "inLanguage": publication.get("lang", "en"),
+        "author": [{"@type": "Person", "name": name} for name in publication["authors"]],
+        "mainEntityOfPage": page_url(publication),
+    }
+
+    venue = publication.get("venue_display")
+    if venue:
+        payload["isPartOf"] = {"@type": container_type, "name": venue}
+
+    pagination = page_range(publication)
+    if pagination:
+        payload["pagination"] = pagination
+
+    if publication.get("doi"):
+        payload["identifier"] = {
+            "@type": "PropertyValue",
+            "propertyID": "DOI",
+            "value": publication["doi"],
+        }
+
+    same_as = [url for _, url in publication.get("links", [])]
+    if same_as:
+        payload["sameAs"] = same_as
+
+    description = build_summary(publication, short=True)
+    if description:
+        payload["description"] = description
+
+    return json.dumps(payload, ensure_ascii=False, indent=2)
+
+
+def build_summary(publication: dict, short: bool = False) -> str:
+    if publication.get("abstract"):
+        return publication["abstract"]
+
+    authors = ", ".join(publication["authors"])
+    venue = publication.get("venue_display")
+    pages = page_range(publication)
+    citation_sentence = f"This page records the publication “{publication['title']}” by {authors}."
+    if venue:
+        citation_sentence += f" The public bibliographic record lists it in {venue} in {publication['year']}."
+    else:
+        citation_sentence += f" The public bibliographic record lists it in {publication['year']}."
+    if pages:
+        citation_sentence += f" Reported pagination: {pages}."
+
+    if short:
+        return citation_sentence
+
+    notes = [
+        citation_sentence,
+        "This catalog page is maintained as a stable public reference for indexing, citation verification, and later addition of publisher, DOI, or PDF links when available.",
+    ]
+
+    citations = publication.get("citations")
+    if citations:
+        notes.append(f"The public Google Scholar profile currently reports {citations} citation{'s' if citations != 1 else ''} for this work.")
+
+    return " ".join(notes)
+
+
+def render_links(publication: dict) -> str:
+    combined_links = [("Publication catalog", "index.html"), *publication.get("links", []), *PROFILE_LINKS]
+    items = "\n".join(
+        f'      <p><a href="{escape(url)}">{escape(label)}</a></p>' for label, url in combined_links
+    )
+    return f"""    <section class="links">
+      <h2>Links</h2>
+{items}
+    </section>"""
+
+
+def render_notes(publication: dict) -> str:
+    return f"""    <section class="abstract">
+      <h2>Record Note</h2>
+      <p>{escape(build_summary(publication))}</p>
+    </section>
+"""
+
+
+def render_publication_page(publication: dict) -> str:
+    title = escape(publication["title"])
+    description = escape(f"Publication record for {publication['title']} by {', '.join(publication['authors'])}.")
+    citation_line = render_citation_line(publication)
+    authors_display = escape(", ".join(publication["authors"]))
+    doi = publication.get("doi")
+    doi_line = f'    <p class="meta">DOI: {escape(doi)}</p>\n' if doi else ""
+
+    return f"""<!doctype html>
+<html lang="{escape(publication.get('lang', 'en'))}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{title}</title>
+  <meta name="description" content="{description}">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="{escape(page_url(publication))}">
+{meta_tags(publication)}
+  <script type="application/ld+json">
+{structured_data(publication)}
+  </script>
+  <style>
+    :root {{
+      color-scheme: light;
+      --bg: #fbf8f1;
+      --text: #1d1a17;
+      --muted: #6c6055;
+      --accent: #8c2f1b;
+      --border: #ddd2c5;
+    }}
+
+    * {{
+      box-sizing: border-box;
+    }}
+
+    body {{
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(140, 47, 27, 0.08), transparent 32%),
+        linear-gradient(180deg, #f2ece2 0%, var(--bg) 100%);
+    }}
+
+    main {{
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 56px 20px 72px;
+    }}
+
+    h1 {{
+      margin: 0 0 12px;
+      font-size: 2.35rem;
+      line-height: 1.1;
+    }}
+
+    h2 {{
+      margin-top: 0;
+    }}
+
+    p {{
+      line-height: 1.65;
+    }}
+
+    .authors,
+    .citation,
+    .meta {{
+      color: var(--muted);
+    }}
+
+    .abstract,
+    .links {{
+      margin-top: 28px;
+      padding: 22px 24px;
+      background: rgba(255, 253, 248, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }}
+
+    a {{
+      color: var(--accent);
+      text-decoration: none;
+    }}
+
+    a:hover {{
+      text-decoration: underline;
+    }}
+  </style>
+</head>
+<body>
+  <main>
+    <p><a href="index.html">All publications</a></p>
+    <h1>{title}</h1>
+    <p class="authors">{authors_display}</p>
+    <p class="citation">{citation_line}</p>
+{doi_line}{render_notes(publication)}
+{render_links(publication)}
+  </main>
+</body>
+</html>
+"""
+
+
+def render_index_item(publication: dict) -> str:
+    links = [f'<a href="{escape(publication["slug"])}.html">Local page</a>']
+    for label, url in publication.get("links", []):
+        if "google scholar" in label.lower():
+            continue
+        links.append(f'<a href="{escape(url)}">{escape(label)}</a>')
+
+    citation_hint = ""
+    if publication.get("citations"):
+        citation_hint = f' <span class="source-note">Cited by {publication["citations"]} on Google Scholar.</span>'
+
+    return f"""          <div class="pub-entry">
+            <h3><a href="{escape(publication["slug"])}.html">{escape(publication["title"])}</a></h3>
+            <p class="meta">{render_citation_line(publication)}</p>
+            <p class="links">{' '.join(links)}</p>
+            <p class="source-note">Catalog page with citation metadata for indexing and verification.{citation_hint}</p>
+          </div>"""
+
+
+def render_featured_item(publication: dict) -> str:
+    links = [f'<a href="{escape(publication["slug"])}.html">Local page</a>']
+    for label, url in publication.get("links", []):
+        if "publisher" in label.lower() or "doi" in label.lower() or "pdf" in label.lower():
+            links.append(f'<a href="{escape(url)}">{escape(label)}</a>')
+
+    return f"""          <div class="featured-item">
+            <p class="pub-title">
+              <a href="{escape(publication["slug"])}.html">{escape(publication["title"])}</a>
+            </p>
+            <p class="meta">{render_citation_line(publication)}</p>
+            <p class="links">{' '.join(links)}</p>
+          </div>"""
+
+
+def render_collection_structured_data(publications: list[dict]) -> str:
+    items = []
+    for idx, publication in enumerate(publications, start=1):
+        items.append(
+            {
+                "@type": "ListItem",
+                "position": idx,
+                "url": page_url(publication),
+                "item": {
+                    "@type": "ScholarlyArticle",
+                    "name": publication["title"],
+                    "datePublished": str(publication["year"]),
+                    "author": [{"@type": "Person", "name": name} for name in publication["authors"]],
+                },
+            }
+        )
+
+    payload = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "Oleksii Tumanov Publications",
+        "url": SITE_URL,
+        "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": len(publications),
+            "itemListElement": items,
+        },
+    }
+    return json.dumps(payload, ensure_ascii=False, indent=2)
+
+
+def render_index(publications: list[dict]) -> str:
+    featured = [pub for pub in publications if pub.get("featured")]
+    catalog = "\n".join(render_index_item(publication) for publication in publications)
+    featured_html = "\n".join(render_featured_item(publication) for publication in featured)
+
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Oleksii Tumanov Publications</title>
+  <meta name="description" content="Publications and scholarly profile links for Oleksii Tumanov.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="{SITE_URL}">
+  <script type="application/ld+json">
+{render_collection_structured_data(publications)}
+  </script>
+  <style>
+    :root {{
+      color-scheme: light;
+      --bg: #f4efe7;
+      --panel: rgba(255, 252, 247, 0.92);
+      --text: #1e1814;
+      --muted: #6a5c52;
+      --accent: #8c2f1b;
+      --accent-soft: #ead8cf;
+      --border: #d8cbbd;
+    }}
+
+    * {{
+      box-sizing: border-box;
+    }}
+
+    body {{
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(140, 47, 27, 0.12), transparent 30%),
+        linear-gradient(180deg, #efe8de 0%, var(--bg) 100%);
+    }}
+
+    main {{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 52px 20px 72px;
+    }}
+
+    h1, h2 {{
+      margin: 0;
+      line-height: 1.1;
+    }}
+
+    h1 {{
+      font-size: 2.7rem;
+      margin-bottom: 10px;
+    }}
+
+    h2 {{
+      font-size: 1.35rem;
+      margin-bottom: 12px;
+    }}
+
+    p {{
+      line-height: 1.65;
+    }}
+
+    a {{
+      color: var(--accent);
+      text-decoration: none;
+    }}
+
+    a:hover {{
+      text-decoration: underline;
+    }}
+
+    .intro {{
+      max-width: 760px;
+      margin: 0 0 30px;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }}
+
+    .grid {{
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 20px;
+      align-items: start;
+    }}
+
+    .card {{
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 14px 30px rgba(31, 24, 20, 0.05);
+    }}
+
+    .hero {{
+      margin-bottom: 22px;
+    }}
+
+    .hero strong {{
+      color: var(--accent);
+    }}
+
+    .featured {{
+      margin-bottom: 18px;
+    }}
+
+    .featured-item,
+    .pub-entry,
+    .profiles li {{
+      padding: 16px 0 0;
+      border-top: 1px solid var(--accent-soft);
+    }}
+
+    .featured-item:first-of-type,
+    .pub-entry:first-child,
+    .profiles li:first-child {{
+      border-top: 0;
+      padding-top: 0;
+    }}
+
+    .pub-title {{
+      font-size: 1.18rem;
+      margin: 0 0 8px;
+    }}
+
+    .pub-entry h3 {{
+      margin: 0 0 8px;
+      font-size: 1.08rem;
+      line-height: 1.3;
+    }}
+
+    .meta,
+    .source-note,
+    .aside p,
+    .aside li {{
+      color: var(--muted);
+    }}
+
+    .meta {{
+      margin: 0 0 10px;
+    }}
+
+    .links {{
+      margin: 10px 0 0;
+    }}
+
+    .links a {{
+      margin-right: 12px;
+      white-space: nowrap;
+    }}
+
+    .profiles {{
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }}
+
+    @media (max-width: 820px) {{
+      .grid {{
+        grid-template-columns: 1fr;
+      }}
+    }}
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <h1>Publications</h1>
+      <p class="intro">
+        A public publication catalog for Oleksii Tumanov with <strong>{len(publications)}</strong> indexed entries,
+        article-level citation metadata, stable URLs, and profile links intended to improve general web discoverability.
+      </p>
+    </section>
+
+    <div class="grid">
+      <section>
+        <article class="card featured">
+          <h2>Featured Publications</h2>
+{featured_html}
+        </article>
+
+        <article class="card">
+          <h2>Publication Catalog</h2>
+          <p class="source-note">
+            This catalog is intentionally plain and exact: title, author, venue, year, and stable links.
+            Each publication has its own local page with scholarly meta tags so search engines can crawl a direct bibliographic record.
+          </p>
+{catalog}
+        </article>
+      </section>
+
+      <aside class="aside">
+        <section class="card">
+          <h2>Profile Links</h2>
+          <ul class="profiles">
+            <li><a href="{GOOGLE_SCHOLAR_URL}">Google Scholar profile</a></li>
+            <li><a href="{RESEARCHGATE_PROFILE_URL}">ResearchGate profile</a></li>
+          </ul>
+        </section>
+
+        <section class="card" style="margin-top: 20px;">
+          <h2>Indexing Notes</h2>
+          <p>
+            The site focuses on crawlable publication records rather than a general personal website.
+            Each article page includes canonical URLs, citation meta tags, and structured data.
+          </p>
+          <p>
+            Where publisher links, DOI records, or PDFs are available, they are attached directly to the corresponding entry.
+          </p>
+        </section>
+      </aside>
+    </div>
+  </main>
+</body>
+</html>
+"""
+
+
+def render_sitemap(publications: list[dict]) -> str:
+    pages = [SITE_URL] + [page_url(publication) for publication in publications]
+    lastmod = dt.date.today().isoformat()
+    body = "\n".join(
+        f"  <url><loc>{html.escape(url)}</loc><lastmod>{lastmod}</lastmod></url>" for url in pages
+    )
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{body}\n"
+        "</urlset>\n"
+    )
+
+
+def render_robots() -> str:
+    return f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}sitemap.xml\n"
+
+
+def write_text(path: Path, content: str) -> None:
+    path.write_text(content, encoding="utf-8")
+
+
+def build() -> None:
+    ensure_slugs()
+    publications = sorted(PUBLICATIONS, key=lambda item: (-item["year"], item["title"].lower()))
+
+    for publication in publications:
+        write_text(ROOT / f"{publication['slug']}.html", render_publication_page(publication))
+
+    write_text(ROOT / "index.html", render_index(publications))
+    write_text(ROOT / "sitemap.xml", render_sitemap(publications))
+    write_text(ROOT / "robots.txt", render_robots())
+
+
+if __name__ == "__main__":
+    build()
