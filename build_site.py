@@ -650,9 +650,12 @@ def build_summary(publication: dict, short: bool = False) -> str:
 
 
 def render_links(publication: dict) -> str:
-    combined_links = [("Publication catalog", "index.html"), *publication.get("links", [])]
+    links = publication.get("links", [])
+    if not links:
+        return ""
+
     items = "\n".join(
-        f'      <p><a href="{escape(url)}">{escape(label)}</a></p>' for label, url in combined_links
+        f'      <p><a href="{escape(url)}">{escape(label)}</a></p>' for label, url in links
     )
     return f"""    <section class="links">
       <h2>Links</h2>
