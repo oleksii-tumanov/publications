@@ -10,8 +10,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 SITE_URL = "https://oleksii-tumanov.github.io/publications/"
-GOOGLE_SCHOLAR_URL = "https://scholar.google.com/citations?user=VfIUt5IAAAAJ&hl=en"
-RESEARCHGATE_PROFILE_URL = "https://www.researchgate.net/profile/Oleksii-Tumanov-2?ev=hdr_xprf"
 
 CYRILLIC_MAP = str.maketrans(
     {
@@ -89,11 +87,6 @@ CYRILLIC_MAP = str.maketrans(
         "э": "e",
     }
 )
-
-PROFILE_LINKS = [
-    ("Google Scholar profile", GOOGLE_SCHOLAR_URL),
-    ("ResearchGate profile", RESEARCHGATE_PROFILE_URL),
-]
 
 PUBLICATIONS = [
     {
@@ -573,7 +566,7 @@ def build_summary(publication: dict, short: bool = False) -> str:
 
 
 def render_links(publication: dict) -> str:
-    combined_links = [("Publication catalog", "index.html"), *publication.get("links", []), *PROFILE_LINKS]
+    combined_links = [("Publication catalog", "index.html"), *publication.get("links", [])]
     items = "\n".join(
         f'      <p><a href="{escape(url)}">{escape(label)}</a></p>' for label, url in combined_links
     )
@@ -713,21 +706,6 @@ def render_index_item(publication: dict) -> str:
           </div>"""
 
 
-def render_featured_item(publication: dict) -> str:
-    links = [f'<a href="{escape(publication["slug"])}.html">Local page</a>']
-    for label, url in publication.get("links", []):
-        if "publisher" in label.lower() or "doi" in label.lower() or "pdf" in label.lower():
-            links.append(f'<a href="{escape(url)}">{escape(label)}</a>')
-
-    return f"""          <div class="featured-item">
-            <p class="pub-title">
-              <a href="{escape(publication["slug"])}.html">{escape(publication["title"])}</a>
-            </p>
-            <p class="meta">{render_citation_line(publication)}</p>
-            <p class="links">{' '.join(links)}</p>
-          </div>"""
-
-
 def render_collection_structured_data(publications: list[dict]) -> str:
     items = []
     for idx, publication in enumerate(publications, start=1):
@@ -760,9 +738,7 @@ def render_collection_structured_data(publications: list[dict]) -> str:
 
 
 def render_index(publications: list[dict]) -> str:
-    featured = [pub for pub in publications if pub.get("featured")]
     catalog = "\n".join(render_index_item(publication) for publication in publications)
-    featured_html = "\n".join(render_featured_item(publication) for publication in featured)
 
     return f"""<!doctype html>
 <html lang="en">
@@ -770,7 +746,7 @@ def render_index(publications: list[dict]) -> str:
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Oleksii Tumanov Publications</title>
-  <meta name="description" content="Publications and scholarly profile links for Oleksii Tumanov.">
+  <meta name="description" content="Publication catalog for Oleksii Tumanov with article-level citation metadata and stable public links.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="{SITE_URL}">
   <script type="application/ld+json">
@@ -836,17 +812,10 @@ def render_index(publications: list[dict]) -> str:
     }}
 
     .intro {{
-      max-width: 760px;
-      margin: 0 0 30px;
+      max-width: 820px;
+      margin: 0 0 24px;
       color: var(--muted);
       font-size: 1.08rem;
-    }}
-
-    .grid {{
-      display: grid;
-      grid-template-columns: 1.25fr 0.75fr;
-      gap: 20px;
-      align-items: start;
     }}
 
     .card {{
@@ -865,29 +834,6 @@ def render_index(publications: list[dict]) -> str:
       color: var(--accent);
     }}
 
-    .featured {{
-      margin-bottom: 18px;
-    }}
-
-    .featured-item,
-    .pub-entry,
-    .profiles li {{
-      padding: 16px 0 0;
-      border-top: 1px solid var(--accent-soft);
-    }}
-
-    .featured-item:first-of-type,
-    .pub-entry:first-child,
-    .profiles li:first-child {{
-      border-top: 0;
-      padding-top: 0;
-    }}
-
-    .pub-title {{
-      font-size: 1.18rem;
-      margin: 0 0 8px;
-    }}
-
     .pub-entry h3 {{
       margin: 0 0 8px;
       font-size: 1.08rem;
@@ -895,9 +841,7 @@ def render_index(publications: list[dict]) -> str:
     }}
 
     .meta,
-    .source-note,
-    .aside p,
-    .aside li {{
+    .source-note {{
       color: var(--muted);
     }}
 
@@ -913,18 +857,6 @@ def render_index(publications: list[dict]) -> str:
       margin-right: 12px;
       white-space: nowrap;
     }}
-
-    .profiles {{
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }}
-
-    @media (max-width: 820px) {{
-      .grid {{
-        grid-template-columns: 1fr;
-      }}
-    }}
   </style>
 </head>
 <body>
@@ -933,48 +865,17 @@ def render_index(publications: list[dict]) -> str:
       <h1>Publications</h1>
       <p class="intro">
         A public publication catalog for Oleksii Tumanov with <strong>{len(publications)}</strong> indexed entries,
-        article-level citation metadata, stable URLs, and profile links intended to improve general web discoverability.
+        article-level citation metadata and stable URLs intended to improve general web discoverability.
       </p>
     </section>
 
-    <div class="grid">
-      <section>
-        <article class="card featured">
-          <h2>Featured Publications</h2>
-{featured_html}
-        </article>
-
-        <article class="card">
-          <h2>Publication Catalog</h2>
-          <p class="source-note">
-            This catalog is intentionally plain and exact: title, author, venue, year, and stable links.
-            Each publication has its own local page with scholarly meta tags so search engines can crawl a direct bibliographic record.
-          </p>
+    <article class="card">
+      <p class="source-note">
+        This catalog is intentionally plain and exact: title, author, venue, year, and stable links.
+        Each publication has its own local page with scholarly meta tags so search engines can crawl a direct bibliographic record.
+      </p>
 {catalog}
-        </article>
-      </section>
-
-      <aside class="aside">
-        <section class="card">
-          <h2>Profile Links</h2>
-          <ul class="profiles">
-            <li><a href="{GOOGLE_SCHOLAR_URL}">Google Scholar profile</a></li>
-            <li><a href="{RESEARCHGATE_PROFILE_URL}">ResearchGate profile</a></li>
-          </ul>
-        </section>
-
-        <section class="card" style="margin-top: 20px;">
-          <h2>Indexing Notes</h2>
-          <p>
-            The site focuses on crawlable publication records rather than a general personal website.
-            Each article page includes canonical URLs, citation meta tags, and structured data.
-          </p>
-          <p>
-            Where publisher links, DOI records, or PDFs are available, they are attached directly to the corresponding entry.
-          </p>
-        </section>
-      </aside>
-    </div>
+    </article>
   </main>
 </body>
 </html>
