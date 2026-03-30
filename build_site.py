@@ -840,6 +840,27 @@ def render_extra_meta(publication: dict) -> str:
     return "\n".join(lines) + "\n"
 
 
+def publication_badge_label(publication: dict) -> str | None:
+    venue_hint = " ".join(
+        str(publication.get(key, "")).lower()
+        for key in ("conference_title", "journal_title", "venue_display")
+    )
+    if any(marker in venue_hint for marker in ("proceedings", "conference", "abstracts of the")):
+        return "Conference paper"
+    if publication.get("journal_title"):
+        return "Article"
+    if publication.get("conference_title"):
+        return "Conference paper"
+    return None
+
+
+def render_publication_badge(publication: dict, indent: str = "    ") -> str:
+    label = publication_badge_label(publication)
+    if not label:
+        return ""
+    return f'{indent}<p class="type-badge">{escape(label)}</p>\n'
+
+
 def render_publication_page(publication: dict) -> str:
     title = escape(publication["title"])
     description_text = f"Publication record for {publication['title']} by {', '.join(publication['authors'])}."
@@ -914,6 +935,20 @@ def render_publication_page(publication: dict) -> str:
       color: var(--muted);
     }}
 
+    .type-badge {{
+      display: inline-block;
+      margin: 0 0 14px;
+      padding: 5px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(140, 47, 27, 0.08);
+      color: var(--accent);
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }}
+
     .abstract,
     .links {{
       margin-top: 28px;
@@ -936,6 +971,7 @@ def render_publication_page(publication: dict) -> str:
 <body>
   <main>
     <p><a href="index.html">All publications</a></p>
+{render_publication_badge(publication)}\
     <h1>{title}</h1>
     <p class="authors">{authors_display}</p>
     <p class="citation">{citation_line}</p>
@@ -959,6 +995,7 @@ def render_index_item(publication: dict) -> str:
         citation_hint = f' <span class="source-note">Cited by {publication["citations"]} on Google Scholar.</span>'
 
     return f"""          <div class="pub-entry">
+{render_publication_badge(publication, indent="            ")}\
             <h3><a href="{escape(publication["slug"])}.html">{escape(publication["title"])}</a></h3>
             <p class="meta">{render_citation_line(publication)}</p>
             <p class="links">{' '.join(links)}</p>
@@ -1098,6 +1135,20 @@ def render_index(publications: list[dict]) -> str:
       margin: 0 0 8px;
       font-size: 1.08rem;
       line-height: 1.3;
+    }}
+
+    .type-badge {{
+      display: inline-block;
+      margin: 0 0 10px;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
     }}
 
     .meta,
