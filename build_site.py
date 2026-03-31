@@ -1011,17 +1011,62 @@ def render_index_item(publication: dict) -> str:
     for label, url in combined_links(publication):
         links.append(f'<a href="{escape(url)}">{escape(label)}</a>')
 
-    citation_hint = ""
+    citation_note = ""
     if publication.get("citations"):
-        citation_hint = f' <span class="source-note">Cited by {publication["citations"]} on Google Scholar.</span>'
+        citation_note = (
+            f'\n            <p class="source-note">Cited by {publication["citations"]} on Google Scholar.</p>'
+        )
 
     return f"""          <div class="pub-entry">
 {render_publication_badge(publication, indent="            ")}\
             <h3><a href="{escape(publication["slug"])}.html">{escape(publication["title"])}</a></h3>
             <p class="meta">{render_citation_line(publication)}</p>
             <p class="links">{' '.join(links)}</p>
-            <p class="source-note">Catalog page with citation metadata for indexing and verification.{citation_hint}</p>
+{citation_note}
           </div>"""
+
+
+def index_sections(publications: list[dict]) -> list[tuple[str, str, list[dict]]]:
+    grouped: dict[str, list[dict]] = {
+        "Article": [],
+        "Conference paper": [],
+        "Other": [],
+    }
+    for publication in publications:
+        label = publication_badge_label(publication) or "Other"
+        grouped[label].append(publication)
+
+    ordered = [
+        ("articles", "Articles", grouped["Article"]),
+        ("conference-papers", "Conference Papers", grouped["Conference paper"]),
+        ("other-records", "Other Records", grouped["Other"]),
+    ]
+    return [item for item in ordered if item[2]]
+
+
+def render_section_nav(publications: list[dict]) -> str:
+    items = []
+    for section_id, label, entries in index_sections(publications):
+        items.append(f'        <a href="#{section_id}">{escape(label)} ({len(entries)})</a>')
+    if not items:
+        return ""
+    joined = "\n".join(items)
+    return f"""      <nav class="section-nav" aria-label="Publication sections">
+{joined}
+      </nav>"""
+
+
+def render_index_sections(publications: list[dict]) -> str:
+    sections = []
+    for section_id, label, entries in index_sections(publications):
+        items = "\n".join(render_index_item(publication) for publication in entries)
+        sections.append(
+            f"""      <section class="catalog-section" id="{escape(section_id)}">
+        <h2>{escape(label)}</h2>
+{items}
+      </section>"""
+        )
+    return "\n".join(sections)
 
 
 def render_collection_structured_data(publications: list[dict]) -> str:
@@ -1056,7 +1101,8 @@ def render_collection_structured_data(publications: list[dict]) -> str:
 
 
 def render_index(publications: list[dict]) -> str:
-    catalog = "\n".join(render_index_item(publication) for publication in publications)
+    catalog = render_index_sections(publications)
+    section_nav = render_section_nav(publications)
 
     return f"""<!doctype html>
 <html lang="en">
@@ -1152,6 +1198,31 @@ def render_index(publications: list[dict]) -> str:
       color: var(--accent);
     }}
 
+    .section-nav {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 22px 0 6px;
+    }}
+
+    .section-nav a {{
+      display: inline-block;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255, 252, 247, 0.82);
+    }}
+
+    .catalog-section + .catalog-section {{
+      margin-top: 34px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+    }}
+
+    .catalog-section h2 {{
+      margin-bottom: 18px;
+    }}
+
     .pub-entry h3 {{
       margin: 0 0 8px;
       font-size: 1.08rem;
@@ -1206,12 +1277,65 @@ def render_index(publications: list[dict]) -> str:
         This catalog is intentionally plain and exact: title, author, venue, year, and stable links.
         Each publication has its own local page with scholarly meta tags so search engines can crawl a direct bibliographic record.
       </p>
+{section_nav}
 {catalog}
     </article>
   </main>
 </body>
 </html>
 """
+
+
+def render_abstracts_needed(publications: list[dict]) -> str:
+    lines = [
+        "# Abstracts Needed",
+        "",
+        f"Generated on {dt.date.today().isoformat()} from the publication catalog.",
+        "",
+    ]
+
+    missing_abstracts = []
+    other_gaps = []
+    for publication in publications:
+        missing = []
+        if not publication.get("abstract"):
+            missing.append("abstract")
+        if not publication.get("doi"):
+            missing.append("doi")
+        if publication.get("journal_title") and not publication.get("issn"):
+            missing.append("issn")
+        if not publication.get("first_page"):
+            missing.append("first_page")
+        if not publication.get("last_page"):
+            missing.append("last_page")
+        if not publication.get("links"):
+            missing.append("links")
+
+        if "abstract" in missing:
+            missing_abstracts.append((publication, missing))
+        elif missing:
+            other_gaps.append((publication, missing))
+
+    lines.append("## Missing Abstracts")
+    lines.append("")
+    for publication, missing in missing_abstracts:
+        section = publication_badge_label(publication) or "Record"
+        other = [item for item in missing if item != "abstract"]
+        extra = f" Other gaps: {', '.join(other)}." if other else ""
+        lines.append(
+            f"- [ ] `{publication['title']}` ({section}; `{publication['slug']}.html`).{extra}"
+        )
+
+    if other_gaps:
+        lines.extend(["", "## Other Metadata Gaps", ""])
+        for publication, missing in other_gaps:
+            section = publication_badge_label(publication) or "Record"
+            lines.append(
+                f"- [ ] `{publication['title']}` ({section}; `{publication['slug']}.html`): {', '.join(missing)}."
+            )
+
+    lines.append("")
+    return "\n".join(lines)
 
 
 def render_sitemap(publications: list[dict]) -> str:
@@ -1246,6 +1370,7 @@ def build() -> None:
     write_text(ROOT / "index.html", render_index(publications))
     write_text(ROOT / "sitemap.xml", render_sitemap(publications))
     write_text(ROOT / "robots.txt", render_robots())
+    write_text(ROOT / "abstracts-needed.md", render_abstracts_needed(publications))
 
 
 if __name__ == "__main__":
