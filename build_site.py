@@ -603,11 +603,48 @@ PUBLICATIONS = [
         "schema_type": "Thesis",
         "degree_name": "Master's thesis",
         "in_support_of": "Master's degree",
+        "doi_status": "No DOI assigned",
+        "venue_display": (
+            "Recueil d’articles du Master 2 franco-ukrainien en Informatique Décisionnelle "
+            "et Statistique pour le Management, 2012–2014"
+        ),
+        "container_schema_type": "Book",
+        "first_page": "127",
+        "last_page": "133",
         "institutions": [
             "Université Lumière Lyon 2",
             "Simon Kuznets Kharkiv National University of Economics",
         ],
+        "academic_supervisors": [
+            "Jérôme Darmont",
+            "O. V. Dorokhov",
+            "I. V. Bezuhla",
+        ],
+        "abstract": (
+            "Cet article présente une approche de conception d’une plateforme cloud destinée à "
+            "synchroniser les données de plusieurs applications d’entreprise. L’étude combine un "
+            "positionnement du marché des solutions d’intégration, un modèle pivot fondé sur des "
+            "unités de données atomiques et une architecture de synchronisation intégrant la "
+            "traçabilité, le rapprochement des enregistrements, des modes complet et différentiel, "
+            "ainsi qu’une abstraction des connecteurs. L’objectif est de réduire le coût d’évolution "
+            "des modèles de données et de faciliter l’intégration tactique entre des systèmes tels "
+            "que les CRM, les outils d’e-mailing, les services de support client et les plateformes "
+            "de commerce électronique."
+        ),
+        "summary_heading": "Résumé",
+        "keywords": [
+            "synchronisation de données",
+            "intégration d’applications",
+            "cloud computing",
+            "modèle pivot",
+            "connecteurs",
+        ],
+        "record_context": "Published in a collection of Master 2 research articles.",
         "links": [
+            (
+                "University repository collection PDF",
+                "https://repository.hneu.edu.ua/bitstream/123456789/8925/1/RECUEIL%20D%27ARTICLES%20MBA%20BI%202012-2014.pdf",
+            ),
             (
                 "ResearchGate thesis record",
                 "https://www.researchgate.net/publication/408345075_OPTIMISATION_DE_LA_SYNCHRONISATION_DES_DONNEES_ENTRE_SYSTEMES_INFORMATIQUES_A_L%27AIDE_DES_TECHNOLOGIES_CLOUD",
@@ -718,6 +755,8 @@ def meta_tags(publication: dict) -> str:
         tags.append(("citation_lastpage", publication["last_page"]))
     if publication.get("doi"):
         tags.append(("citation_doi", publication["doi"]))
+    if publication.get("keywords"):
+        tags.append(("citation_keywords", "; ".join(publication["keywords"])))
     for institution in publication.get("institutions", []):
         tags.append(("citation_dissertation_institution", institution))
 
@@ -732,7 +771,10 @@ def meta_tags(publication: dict) -> str:
 
 
 def structured_data(publication: dict) -> str:
-    container_type = "Periodical" if publication.get("journal_title") else "CreativeWorkSeries"
+    container_type = publication.get(
+        "container_schema_type",
+        "Periodical" if publication.get("journal_title") else "CreativeWorkSeries",
+    )
     payload = {
         "@context": "https://schema.org",
         "@type": publication.get("schema_type", "ScholarlyArticle"),
@@ -752,6 +794,15 @@ def structured_data(publication: dict) -> str:
     venue = publication.get("venue_display")
     if venue:
         payload["isPartOf"] = {"@type": container_type, "name": venue}
+
+    if publication.get("keywords"):
+        payload["keywords"] = publication["keywords"]
+
+    if publication.get("academic_supervisors"):
+        payload["contributor"] = [
+            {"@type": "Person", "name": name}
+            for name in publication["academic_supervisors"]
+        ]
 
     pagination = page_range(publication)
     if pagination:
@@ -855,8 +906,9 @@ def render_links(publication: dict) -> str:
 
 
 def render_notes(publication: dict) -> str:
+    heading = publication.get("summary_heading", "Record Note")
     return f"""    <section class="abstract">
-      <h2>Record Note</h2>
+      <h2>{escape(heading)}</h2>
       <p>{escape(build_summary(publication))}</p>
     </section>
 """
@@ -878,9 +930,16 @@ def render_extra_meta(publication: dict) -> str:
 
     if publication.get("degree_name"):
         lines.append(f'    <p class="meta">Type: {escape(publication["degree_name"])}</p>')
+    if publication.get("doi_status"):
+        lines.append(f'    <p class="meta">DOI: {escape(publication["doi_status"])}</p>')
     if publication.get("institutions"):
         institutions = "; ".join(publication["institutions"])
         lines.append(f'    <p class="meta">Institutions: {escape(institutions)}</p>')
+    if publication.get("academic_supervisors"):
+        supervisors = "; ".join(publication["academic_supervisors"])
+        lines.append(f'    <p class="meta">Academic supervision: {escape(supervisors)}</p>')
+    if publication.get("record_context"):
+        lines.append(f'    <p class="meta">Record context: {escape(publication["record_context"])}</p>')
 
     if publication.get("event_location"):
         lines.append(f'    <p class="meta">Event location: {escape(publication["event_location"])}</p>')
