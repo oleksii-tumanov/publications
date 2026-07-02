@@ -598,6 +598,7 @@ PUBLICATIONS = [
             "Optimisation de la synchronisation de donnees entre les systemes informatiques avec l'utilisation des technologies nuageux",
         ],
         "year": 2014,
+        "doi": "10.13140/RG.2.2.24219.43047",
         "lang": "fr",
         "publication_type": "Thesis",
         "schema_type": "Thesis",
@@ -640,6 +641,10 @@ PUBLICATIONS = [
         ],
         "record_context": "Published in a collection of Master 2 research articles.",
         "links": [
+            (
+                "DOI record",
+                "https://doi.org/10.13140/RG.2.2.24219.43047",
+            ),
             (
                 "University repository collection PDF",
                 "https://repository.hneu.edu.ua/bitstream/123456789/8925/1/RECUEIL%20D%27ARTICLES%20MBA%20BI%202012-2014.pdf",
