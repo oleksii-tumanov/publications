@@ -591,12 +591,29 @@ PUBLICATIONS = [
         ],
     },
     {
-        "title": "Optimisation de la synchronisation de donnees entre les systemes informatiques avec l'utilisation des technologies nuageux",
+        "title": "Optimisation de la synchronisation des données entre systèmes informatiques à l’aide des technologies cloud",
         "authors": ["Oleksii Tumanov"],
         "citation_authors": ["Tumanov, Oleksii"],
+        "alternate_titles": [
+            "Optimisation de la synchronisation de donnees entre les systemes informatiques avec l'utilisation des technologies nuageux",
+        ],
         "year": 2014,
         "lang": "fr",
-        "links": [],
+        "publication_type": "Thesis",
+        "schema_type": "Thesis",
+        "degree_name": "Master's thesis",
+        "in_support_of": "Master's degree",
+        "institutions": [
+            "Université Lumière Lyon 2",
+            "Simon Kuznets Kharkiv National University of Economics",
+        ],
+        "links": [
+            (
+                "ResearchGate thesis record",
+                "https://www.researchgate.net/publication/408345075_OPTIMISATION_DE_LA_SYNCHRONISATION_DES_DONNEES_ENTRE_SYSTEMES_INFORMATIQUES_A_L%27AIDE_DES_TECHNOLOGIES_CLOUD",
+            ),
+        ],
+        "slug": "optimisation-de-la-synchronisation-de-donnees-entre-les-systemes-informatiques-avec-l-utilisation-des-technologies-nuageux",
     },
 ]
 
@@ -668,6 +685,9 @@ def render_citation_line(publication: dict) -> str:
     elif trailing_parts:
         parts.append(", ".join(trailing_parts) + ".")
 
+    if publication.get("degree_name"):
+        parts.append(f"<em>{escape(publication['degree_name'])}</em>.")
+
     return " ".join(parts)
 
 
@@ -698,6 +718,8 @@ def meta_tags(publication: dict) -> str:
         tags.append(("citation_lastpage", publication["last_page"]))
     if publication.get("doi"):
         tags.append(("citation_doi", publication["doi"]))
+    for institution in publication.get("institutions", []):
+        tags.append(("citation_dissertation_institution", institution))
 
     for label, url in publication.get("links", []):
         if "pdf" in label.lower():
@@ -713,7 +735,7 @@ def structured_data(publication: dict) -> str:
     container_type = "Periodical" if publication.get("journal_title") else "CreativeWorkSeries"
     payload = {
         "@context": "https://schema.org",
-        "@type": "ScholarlyArticle",
+        "@type": publication.get("schema_type", "ScholarlyArticle"),
         "headline": publication["title"],
         "name": publication["title"],
         "url": page_url(publication),
@@ -742,6 +764,9 @@ def structured_data(publication: dict) -> str:
             "value": publication["doi"],
         }
 
+    if publication.get("in_support_of"):
+        payload["inSupportOf"] = publication["in_support_of"]
+
     same_as = [url for _, url in publication.get("links", [])]
     if same_as:
         payload["sameAs"] = same_as
@@ -761,7 +786,8 @@ def build_summary(publication: dict, short: bool = False) -> str:
     venue = publication.get("venue_display")
     pages = page_range(publication)
     has_external_links = bool(publication.get("links"))
-    citation_sentence = f"This page records the publication “{publication['title']}” by {authors}."
+    work_type = publication.get("degree_name", "publication").lower()
+    citation_sentence = f"This page records the {work_type} “{publication['title']}” by {authors}."
     if venue:
         citation_sentence += f" The public bibliographic record lists it in {venue} in {publication['year']}."
     else:
@@ -777,7 +803,9 @@ def build_summary(publication: dict, short: bool = False) -> str:
         "This catalog page is maintained as a stable public reference for indexing and citation verification.",
     ]
 
-    if has_external_links:
+    if publication.get("publication_type") == "Thesis" and has_external_links:
+        notes.append("A public ResearchGate thesis record is linked below.")
+    elif has_external_links:
         notes.append("Verified publisher, DOI, or PDF links are included below when available.")
     else:
         notes.append("No public publisher PDF or article page has been verified for this record yet.")
@@ -848,6 +876,12 @@ def render_alternate_titles(publication: dict) -> str:
 def render_extra_meta(publication: dict) -> str:
     lines: list[str] = []
 
+    if publication.get("degree_name"):
+        lines.append(f'    <p class="meta">Type: {escape(publication["degree_name"])}</p>')
+    if publication.get("institutions"):
+        institutions = "; ".join(publication["institutions"])
+        lines.append(f'    <p class="meta">Institutions: {escape(institutions)}</p>')
+
     if publication.get("event_location"):
         lines.append(f'    <p class="meta">Event location: {escape(publication["event_location"])}</p>')
     if publication.get("event_date"):
@@ -862,6 +896,9 @@ def render_extra_meta(publication: dict) -> str:
 
 
 def publication_badge_label(publication: dict) -> str | None:
+    if publication.get("publication_type"):
+        return publication["publication_type"]
+
     venue_hint = " ".join(
         str(publication.get(key, "")).lower()
         for key in ("conference_title", "journal_title", "venue_display")
@@ -1030,6 +1067,7 @@ def index_sections(publications: list[dict]) -> list[tuple[str, str, list[dict]]
     grouped: dict[str, list[dict]] = {
         "Article": [],
         "Conference paper": [],
+        "Thesis": [],
         "Other": [],
     }
     for publication in publications:
@@ -1039,6 +1077,7 @@ def index_sections(publications: list[dict]) -> list[tuple[str, str, list[dict]]
     ordered = [
         ("articles", "Articles", grouped["Article"]),
         ("conference-papers", "Conference Papers", grouped["Conference paper"]),
+        ("theses", "Theses", grouped["Thesis"]),
         ("other-records", "Other Records", grouped["Other"]),
     ]
     return [item for item in ordered if item[2]]
@@ -1078,7 +1117,7 @@ def render_collection_structured_data(publications: list[dict]) -> str:
                 "position": idx,
                 "url": page_url(publication),
                 "item": {
-                    "@type": "ScholarlyArticle",
+                    "@type": publication.get("schema_type", "ScholarlyArticle"),
                     "name": publication["title"],
                     "datePublished": str(publication["year"]),
                     "author": [{"@type": "Person", "name": name} for name in publication["authors"]],
@@ -1297,16 +1336,17 @@ def render_abstracts_needed(publications: list[dict]) -> str:
     missing_abstracts = []
     other_gaps = []
     for publication in publications:
+        is_thesis = publication_badge_label(publication) == "Thesis"
         missing = []
         if not publication.get("abstract"):
             missing.append("abstract")
-        if not publication.get("doi"):
+        if not publication.get("doi") and not is_thesis:
             missing.append("doi")
         if publication.get("journal_title") and not publication.get("issn"):
             missing.append("issn")
-        if not publication.get("first_page"):
+        if not publication.get("first_page") and not is_thesis:
             missing.append("first_page")
-        if not publication.get("last_page"):
+        if not publication.get("last_page") and not is_thesis:
             missing.append("last_page")
         if not publication.get("links"):
             missing.append("links")

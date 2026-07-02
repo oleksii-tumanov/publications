@@ -1,6 +1,6 @@
 # Abstracts Needed
 
-Generated on 2026-03-30 from the publication catalog.
+Generated on 2026-07-02 from the publication catalog.
 
 ## Missing Abstracts
 
@@ -24,7 +24,7 @@ Generated on 2026-03-30 from the publication catalog.
 - [ ] `Розвиток статистичної системи управління метаданими в Україні` (Conference paper; `rozvytok-statystychnoyi-systemy-upravlinnya-metadanymy-v-ukrayini.html`). Other gaps: doi.
 - [ ] `СТАТИСТИЧНИЙ АНАЛІЗ РІВНЯ РОЗВИТКУ ІНФОРМАЦІЙНОГО СУСПІЛЬСТВА В УКРАЇНІ` (Conference paper; `statystychnyy-analiz-rivnya-rozvytku-informatsiynoho-suspilstva-v-ukrayini.html`). Other gaps: doi.
 - [ ] `Інформаційне забезпечення статистичного вивчення соціальних медіа` (Article; `informatsiyne-zabezpechennya-statystychnoho-vyvchennya-sotsialnykh-media.html`).
-- [ ] `Optimisation de la synchronisation de donnees entre les systemes informatiques avec l'utilisation des technologies nuageux` (Record; `optimisation-de-la-synchronisation-de-donnees-entre-les-systemes-informatiques-avec-l-utilisation-des-technologies-nuageux.html`). Other gaps: doi, first_page, last_page, links.
+- [ ] `Optimisation de la synchronisation des données entre systèmes informatiques à l’aide des technologies cloud` (Thesis; `optimisation-de-la-synchronisation-de-donnees-entre-les-systemes-informatiques-avec-l-utilisation-des-technologies-nuageux.html`).
 
 ## Other Metadata Gaps
 
