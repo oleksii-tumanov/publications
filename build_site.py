@@ -603,14 +603,13 @@ PUBLICATIONS = [
         "schema_type": "Thesis",
         "degree_name": "Master's thesis",
         "in_support_of": "Master's degree",
-        "doi_status": "No DOI assigned",
         "venue_display": (
             "Recueil d’articles du Master 2 franco-ukrainien en Informatique Décisionnelle "
             "et Statistique pour le Management, 2012–2014"
         ),
         "container_schema_type": "Book",
         "first_page": "127",
-        "last_page": "133",
+        "last_page": "134",
         "institutions": [
             "Université Lumière Lyon 2",
             "Simon Kuznets Kharkiv National University of Economics",
